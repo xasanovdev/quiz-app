@@ -13,22 +13,29 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
   onOptionClick,
 }) => {
   return (
-    <div>
-      <p>{question.question}</p>
-      {question.options?.map((option, index) => (
-        <div key={index}>
-          <input
-            type="checkbox"
-            id={option}
-            name={`multiple-choice-${question.id}`}
-            value={option}
-            checked={selectedOptions.includes(option)}
-            onChange={() => onOptionClick(option)}
-          />
-          <label htmlFor={option}>{option}</label>
-        </div>
-      ))}
-    </div>
+    <>
+      <div>
+        <p className="text-2xl font-semibold text-black">{question.question}</p>
+        <ul className="mt-4 flex flex-col gap-4">
+          {question.options?.map((option, index) => (
+            <li key={index}>
+              <label className="px-4 py-3 flex items-center gap-2 cursor-pointer border border-black rounded w-full">
+                <input
+                  type="checkbox"
+                  id={option}
+                  name={`multiple-choice-${question.id}`}
+                  value={option}
+                  checked={selectedOptions.includes(option)}
+                  onClick={() => onOptionClick(option)}
+                />
+
+                {option}
+              </label>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
   );
 };
 

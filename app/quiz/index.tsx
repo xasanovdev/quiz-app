@@ -161,7 +161,7 @@ const Quiz = () => {
         );
       case "true-false":
         return (
-          <TrueFalseQuestion
+          <SingleChoiceQuestion
             key={question.id}
             question={question}
             onOptionClick={handleOptionClick}
@@ -203,7 +203,7 @@ const Quiz = () => {
                 {quizQuestions.map((question, index) => (
                   <Button
                     variant={
-                      answers.find((ans) => ans.id === question.id)
+                      answers?.find((ans) => ans.id === question.id)
                         ? "success"
                         : index === currentQuestionIndex
                         ? "secondary"
@@ -231,7 +231,14 @@ const Quiz = () => {
               </div>
             </div>
           </div>
-          {renderQuestion(currentQuestion)}
+          <div className="container w-full mt-20">
+            <div className="flex gap-1 px-12">
+              <span className="text-2xl font-semibold">
+                {currentQuestionIndex + 1}.{" "}
+              </span>
+              <div className="grow">{renderQuestion(currentQuestion)}</div>
+            </div>
+          </div>
         </>
       )}
 

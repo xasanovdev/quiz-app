@@ -19,6 +19,7 @@ export const questions: Question[] = [
     id: 3,
     type: "true-false",
     question: "The sky is green.",
+    options: ["True", "False"],
     answer: false,
   },
   // {
