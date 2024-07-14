@@ -14,9 +14,11 @@ import Button from "@/components/Button";
 
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { MdQuestionAnswer } from "react-icons/md";
+import Modal from "@/components/Modal";
 
 const Quiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [submitModal, setSubmitModal] = useState(false);
   const [quizQuestions, setQuizQuestions] = useState<Question[]>(questions);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [overviewAnswers, setOverviewAnswers] = useState<OverviewAnswers[]>([]);
@@ -85,6 +87,8 @@ const Quiz = () => {
   };
 
   const submitQuiz = () => {
+    setSubmitModal(false);
+
     const correctAnswers = quizQuestions.filter((question) => {
       const answer = answers.find((ans) => ans.id === question.id);
       if (!answer) return false;
@@ -223,13 +227,35 @@ const Quiz = () => {
                   {currentQuestionIndex + 1}/{questions.length}{" "}
                   <MdQuestionAnswer />
                 </p>
-                <Button onClick={submitQuiz}>Submit</Button>
+                <Button onClick={() => setSubmitModal(true)}>Submit</Button>
               </div>
             </div>
           </div>
           {renderQuestion(currentQuestion)}
         </>
       )}
+
+      <Modal
+        isOpen={submitModal}
+        onClose={() => setSubmitModal(false)}
+        title=""
+      >
+        <p className="text-base font-medium">
+          Are you sure you want to submit ?
+        </p>
+        <div className="flex gap-2 mt-4">
+          <Button
+            className="w-full"
+            onClick={() => setSubmitModal(false)}
+            variant="danger"
+          >
+            Close Modal
+          </Button>
+          <Button className="w-full" onClick={submitQuiz} variant="black">
+            Submit
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };
