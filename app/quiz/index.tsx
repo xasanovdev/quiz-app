@@ -2,14 +2,14 @@
 
 import { questions } from "@/public/data/questions";
 import React, { useState, useEffect } from "react";
-import TrueFalseQuestion from "../components/Quiz/QuestionTypes/TrueFalseQuestion";
-import DragAndDropQuestion from "../components/Quiz/QuestionTypes/DragAndDropQuestion";
-import TextInputQuestion from "../components/Quiz/QuestionTypes/TextInputQuestion";
+import TrueFalseQuestion from "../../components/Quiz/QuestionTypes/TrueFalseQuestion";
+import DragAndDropQuestion from "../../components/Quiz/QuestionTypes/DragAndDropQuestion";
+import TextInputQuestion from "../../components/Quiz/QuestionTypes/TextInputQuestion";
 
 import { Answer, OverviewAnswers, Question } from "@/types/question";
-import SingleChoiceQuestion from "../components/Quiz/QuestionTypes/SingleChoiseQuestion";
-import MultipleChoiceQuestion from "../components/Quiz/QuestionTypes/MultipleChoiseQuestion";
-import Overview from "../components/Quiz/Overview";
+import SingleChoiceQuestion from "../../components/Quiz/QuestionTypes/SingleChoiseQuestion";
+import MultipleChoiceQuestion from "../../components/Quiz/QuestionTypes/MultipleChoiseQuestion";
+import Overview from "../../components/Quiz/Overview";
 
 const Quiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
