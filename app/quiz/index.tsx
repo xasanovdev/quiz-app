@@ -2,13 +2,14 @@
 
 import { questions } from "@/public/data/questions";
 import React, { useState, useEffect } from "react";
-import TrueFalseQuestion from "../components/QuestionTypes/TrueFalseQuestion";
-import DragAndDropQuestion from "../components/QuestionTypes/DragAndDropQuestion";
-import TextInputQuestion from "../components/QuestionTypes/TextInputQuestion";
+import TrueFalseQuestion from "../components/Quiz/QuestionTypes/TrueFalseQuestion";
+import DragAndDropQuestion from "../components/Quiz/QuestionTypes/DragAndDropQuestion";
+import TextInputQuestion from "../components/Quiz/QuestionTypes/TextInputQuestion";
 
 import { Question } from "@/types/question";
-import SingleChoiceQuestion from "../components/QuestionTypes/SingleChoiseQuestion";
-import MultipleChoiceQuestion from "../components/QuestionTypes/MultipleChoiseQuestion";
+import SingleChoiceQuestion from "../components/Quiz/QuestionTypes/SingleChoiseQuestion";
+import MultipleChoiceQuestion from "../components/Quiz/QuestionTypes/MultipleChoiseQuestion";
+import Overview from "../components/Quiz/Overview";
 
 interface Answer {
   question: string;
@@ -26,6 +27,7 @@ const Quiz = () => {
   const [overviewAnswers, setOverviewAnswers] = useState<OverviewAnswers[]>([]);
   const [score, setScore] = useState(0);
   const [textInputAnswer, setTextInputAnswer] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     setQuizQuestions(questions);
@@ -126,6 +128,8 @@ const Quiz = () => {
         };
       })
     );
+
+    setIsSubmitted(true);
   };
 
   const renderQuestion = (question: Question) => {
@@ -176,7 +180,7 @@ const Quiz = () => {
 
   return (
     <div>
-      {quizQuestions.length > 0 && renderQuestion(currentQuestion)}
+      {isSubmitted ? <Overview /> : renderQuestion(currentQuestion)}
       <div>
         <button onClick={handlePrevious} disabled={currentQuestionIndex === 0}>
           Previous

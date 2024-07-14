@@ -1,5 +1,3 @@
-// app/page.tsx
-
 import React from "react";
 import Quiz from "./quiz";
 
