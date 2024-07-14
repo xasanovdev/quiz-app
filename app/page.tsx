@@ -2,8 +2,8 @@
 
 import Countdown from "@/components/Countdown";
 import NameInput from "@/components/NameInput";
-import QuizContainer from "@/components/Quiz/QuizContainer";
 import { useState, useEffect } from "react";
+import Quiz from "./quiz";
 
 const HomePage = () => {
   const [isUserStarted, setIsUserStarted] = useState<boolean>(false);
@@ -32,16 +32,18 @@ const HomePage = () => {
     setIsUserStarted(true);
   };
 
-    return (
-    <div className="w-full min-h-screen container flex-center">
-      {!isUserStarted ? (
-        <NameInput name={name} setName={setName} onStart={quizStartCounter} />
-      ) : isQuizStarted ? (
-        <QuizContainer />
-      ) : (
-        <Countdown counter={counter} />
-      )}
-    </div>
+  return (
+    <>
+      <div className="w-full min-h-screen">
+        {/*    {!isUserStarted ?  
+         <NameInput name={name} setName={setName} onStart={quizStartCounter} />
+    ) : isQuizStarted ? ( */}
+        <Quiz />
+        {/*  ) : (
+       <Countdown counter={counter} />
+     )} */}
+      </div>
+    </>
   );
 };
 

@@ -12,11 +12,15 @@ export interface Question {
 }
 
 export interface Answer {
+  id: number;
   question: string;
   answer: string | string[] | boolean;
 }
 
-export interface OverviewAnswers extends Answer {
+export interface OverviewAnswers {
+  id: number;
+  question: string;
+  answer: string | string[] | boolean;
   isCorrect: boolean;
   isAnswered?: boolean;
 }

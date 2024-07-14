@@ -12,6 +12,9 @@ import MultipleChoiceQuestion from "../../components/Quiz/QuestionTypes/Multiple
 import Overview from "../../components/Quiz/Overview";
 import Button from "@/components/Button";
 
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { MdQuestionAnswer } from "react-icons/md";
+
 const Quiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [quizQuestions, setQuizQuestions] = useState<Question[]>(questions);
@@ -30,7 +33,11 @@ const Quiz = () => {
     ) {
       setAnswers([
         ...answers,
-        { question: currentQuestion.question, answer: option },
+        {
+          question: currentQuestion.question,
+          answer: option,
+          id: currentQuestion.id,
+        },
       ]);
     } else if (currentQuestion.type === "multiple-choice") {
       const selectedOptions =
@@ -45,6 +52,7 @@ const Quiz = () => {
         updatedAnswers[currentQuestionIndex] = {
           question: currentQuestion.question,
           answer: newOptions,
+          id: currentQuestion.id,
         };
         return updatedAnswers;
       });
@@ -58,7 +66,11 @@ const Quiz = () => {
   const handleTextInputSubmit = () => {
     setAnswers([
       ...answers,
-      { question: currentQuestion.question, answer: textInputAnswer },
+      {
+        question: currentQuestion.question,
+        answer: textInputAnswer,
+        id: currentQuestion.id,
+      },
     ]);
   };
 
@@ -74,7 +86,7 @@ const Quiz = () => {
 
   const submitQuiz = () => {
     const correctAnswers = quizQuestions.filter((question) => {
-      const answer = answers.find((ans) => ans.question === question.question);
+      const answer = answers.find((ans) => ans.id === question.id);
       if (!answer) return false;
       if (question.type === "multiple-choice") {
         return (
@@ -88,11 +100,10 @@ const Quiz = () => {
 
     setOverviewAnswers(
       quizQuestions.map((question) => {
-        const answer = answers.find(
-          (ans) => ans.question === question.question
-        );
+        const answer = answers.find((ans) => ans.id === question.id);
         if (!answer) {
           return {
+            id: question.id,
             question: question.question,
             answer: "",
             isCorrect: false,
@@ -101,6 +112,7 @@ const Quiz = () => {
         }
         if (question.type === "multiple-choice") {
           return {
+            id: question.id,
             question: question.question,
             answer: answer.answer,
             isCorrect:
@@ -108,7 +120,9 @@ const Quiz = () => {
             isAnswered: true,
           };
         }
+
         return {
+          id: question.id,
           question: question.question,
           answer: answer.answer,
           isCorrect: answer.answer === question.answer,
@@ -167,38 +181,53 @@ const Quiz = () => {
   };
 
   return (
-    <div>
+    <div className="w-full h-full">
       {isSubmitted ? (
         <Overview score={score} overviewAnswers={overviewAnswers} />
       ) : (
         <>
-          {renderQuestion(currentQuestion)}
-          <div>
-            <Button
-              onClick={handlePrevious}
-              disabled={currentQuestionIndex === 0}
-            >
-              Previous
-            </Button>
-            {quizQuestions.map((question, index) => (
-              <Button
-                key={question.id}
-                onClick={() => setCurrentQuestionIndex(index)}
-                variant="black"
-                size="small"
-                disabled={answers[index] === undefined}
+          <div className="w-full py-4 top-0 border-b border-gray-300">
+            <div className="container flex gap-4">
+              <button
+                className="hover:bg-gray-200 rounded-full w-9 h-9 disabled:opacity-55 disabled:cursor-not-allowed flex-center"
+                onClick={handlePrevious}
+                disabled={currentQuestionIndex === 0}
               >
-                {index + 1}
-              </Button>
-            ))}
-            <Button
-              onClick={handleNext}
-              disabled={currentQuestionIndex === quizQuestions.length - 1}
-            >
-              Next
-            </Button>
-            <Button onClick={submitQuiz}>Submit</Button>
+                <FaArrowLeft />
+              </button>
+              <div className="grow flex-center gap-2">
+                {quizQuestions.map((question, index) => (
+                  <Button
+                    variant={
+                      answers.find((ans) => ans.id === question.id)
+                        ? "success"
+                        : index === currentQuestionIndex
+                        ? "secondary"
+                        : "secondary_light"
+                    }
+                    className="h-2 grow"
+                    key={question.id}
+                    onClick={() => setCurrentQuestionIndex(index)}
+                  ></Button>
+                ))}
+              </div>
+              <button
+                className="hover:bg-gray-200 rounded-full w-9 h-9 disabled:opacity-55 disabled:cursor-not-allowed flex-center"
+                onClick={handleNext}
+                disabled={currentQuestionIndex === quizQuestions.length - 1}
+              >
+                <FaArrowRight />
+              </button>
+              <div className="flex gap-4">
+                <p className="flex items-center gap-2 text-lg font-bold">
+                  {currentQuestionIndex + 1}/{questions.length}{" "}
+                  <MdQuestionAnswer />
+                </p>
+                <Button onClick={submitQuiz}>Submit</Button>
+              </div>
+            </div>
           </div>
+          {renderQuestion(currentQuestion)}
         </>
       )}
     </div>
