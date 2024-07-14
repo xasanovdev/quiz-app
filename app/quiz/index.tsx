@@ -18,20 +18,21 @@ interface Answer {
 
 interface OverviewAnswers extends Answer {
   isCorrect: boolean;
+  isAnswered?: boolean;
 }
 
 const Quiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
+  const [quizQuestions, setQuizQuestions] = useState<Question[]>(questions);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [overviewAnswers, setOverviewAnswers] = useState<OverviewAnswers[]>([]);
   const [score, setScore] = useState(0);
   const [textInputAnswer, setTextInputAnswer] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  useEffect(() => {
-    setQuizQuestions(questions);
-  }, []);
+  // useEffect(() => {
+  //   setQuizQuestions();
+  // }, []);
 
   const currentQuestion = quizQuestions[currentQuestionIndex];
 
@@ -99,32 +100,32 @@ const Quiz = () => {
     setScore(correctAnswers.length);
 
     setOverviewAnswers(
-      answers.map((answer) => {
-        const question = quizQuestions.find(
-          (question) => question.question === answer.question
+      quizQuestions.map((question) => {
+        const answer = answers.find(
+          (ans) => ans.question === question.question
         );
-
-        if (!question) {
+        if (!answer) {
           return {
-            question: answer.question,
-            answer: answer.answer,
+            question: question.question,
+            answer: "",
             isCorrect: false,
+            isAnswered: false,
           };
         }
-
         if (question.type === "multiple-choice") {
           return {
-            question: answer.question,
+            question: question.question,
             answer: answer.answer,
             isCorrect:
               JSON.stringify(answer.answer) === JSON.stringify(question.answer),
+            isAnswered: true,
           };
         }
-
         return {
-          question: answer.question,
+          question: question.question,
           answer: answer.answer,
           isCorrect: answer.answer === question.answer,
+          isAnswered: true,
         };
       })
     );
