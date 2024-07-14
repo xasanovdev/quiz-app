@@ -33,14 +33,15 @@ const Quiz = () => {
       currentQuestion.type === "single-choice" ||
       currentQuestion.type === "true-false"
     ) {
-      setAnswers([
-        ...answers,
-        {
+      setAnswers((prevAnswers) => {
+        const updatedAnswers = [...prevAnswers];
+        updatedAnswers[currentQuestionIndex] = {
           question: currentQuestion.question,
           answer: option,
           id: currentQuestion.id,
-        },
-      ]);
+        };
+        return updatedAnswers;
+      });
     } else if (currentQuestion.type === "multiple-choice") {
       const selectedOptions =
         (answers[currentQuestionIndex]?.answer as string[]) || [];
@@ -90,7 +91,7 @@ const Quiz = () => {
     setSubmitModal(false);
 
     const correctAnswers = quizQuestions.filter((question) => {
-      const answer = answers.find((ans) => ans.id === question.id);
+      const answer = answers?.find((ans) => ans.id === question.id);
       if (!answer) return false;
       if (question.type === "multiple-choice") {
         return (
@@ -145,9 +146,11 @@ const Quiz = () => {
           <SingleChoiceQuestion
             key={question.id}
             question={question}
+            selectedOption={answers[currentQuestionIndex]?.answer as string}
             onOptionClick={handleOptionClick}
           />
         );
+
       case "multiple-choice":
         return (
           <MultipleChoiceQuestion
@@ -161,8 +164,9 @@ const Quiz = () => {
         );
       case "true-false":
         return (
-          <SingleChoiceQuestion
+          <TrueFalseQuestion
             key={question.id}
+            selectedOption={answers[currentQuestionIndex]?.answer as string}
             question={question}
             onOptionClick={handleOptionClick}
           />
@@ -185,85 +189,90 @@ const Quiz = () => {
   };
 
   return (
-    <div className="w-full h-full">
-      {isSubmitted ? (
-        <Overview score={score} overviewAnswers={overviewAnswers} />
-      ) : (
-        <>
-          <div className="w-full py-4 top-0 border-b border-gray-300">
-            <div className="container flex gap-4">
-              <button
-                className="hover:bg-gray-200 rounded-full w-9 h-9 disabled:opacity-55 disabled:cursor-not-allowed flex-center"
-                onClick={handlePrevious}
-                disabled={currentQuestionIndex === 0}
-              >
-                <FaArrowLeft />
-              </button>
-              <div className="grow flex-center gap-2">
-                {quizQuestions.map((question, index) => (
-                  <Button
-                    variant={
-                      answers?.find((ans) => ans.id === question.id)
-                        ? "success"
-                        : index === currentQuestionIndex
-                        ? "secondary"
-                        : "secondary_light"
-                    }
-                    className="h-2 grow"
-                    key={question.id}
-                    onClick={() => setCurrentQuestionIndex(index)}
-                  ></Button>
-                ))}
-              </div>
-              <button
-                className="hover:bg-gray-200 rounded-full w-9 h-9 disabled:opacity-55 disabled:cursor-not-allowed flex-center"
-                onClick={handleNext}
-                disabled={currentQuestionIndex === quizQuestions.length - 1}
-              >
-                <FaArrowRight />
-              </button>
-              <div className="flex gap-4">
-                <p className="flex items-center gap-2 text-lg font-bold">
-                  {currentQuestionIndex + 1}/{questions.length}{" "}
-                  <MdQuestionAnswer />
-                </p>
-                <Button onClick={() => setSubmitModal(true)}>Submit</Button>
+    <>
+      <div className="w-full h-full">
+        {isSubmitted ? (
+          <Overview score={score} overviewAnswers={overviewAnswers} />
+        ) : (
+          <>
+            <div className="w-full py-4 top-0 border-b border-gray-300">
+              <div className="container flex gap-4">
+                <button
+                  className="hover:bg-gray-200 rounded-full w-9 h-9 disabled:opacity-55 disabled:cursor-not-allowed flex-center"
+                  onClick={handlePrevious}
+                  disabled={currentQuestionIndex === 0}
+                >
+                  <FaArrowLeft />
+                </button>
+                <div className="grow flex-center gap-2">
+                  {quizQuestions.map((question, index) => (
+                    <Button
+                      variant={
+                        answers?.find(
+                          (ans) => ans.id === question.id ?? false
+                        ) ?? false
+                          ? "success"
+                          : index === currentQuestionIndex
+                          ? "secondary"
+                          : "secondary_light"
+                      }
+                      className="h-2 grow"
+                      key={question.id}
+                      onClick={() => setCurrentQuestionIndex(index)}
+                    ></Button>
+                  ))}
+                </div>
+                <button
+                  className="hover:bg-gray-200 rounded-full w-9 h-9 disabled:opacity-55 disabled:cursor-not-allowed flex-center"
+                  onClick={handleNext}
+                  disabled={currentQuestionIndex === quizQuestions.length - 1}
+                >
+                  <FaArrowRight />
+                </button>
+                <div className="flex gap-4">
+                  <p className="flex items-center gap-2 text-lg font-bold">
+                    {currentQuestionIndex + 1}/{questions.length}{" "}
+                    <MdQuestionAnswer />
+                  </p>
+                  <Button onClick={() => setSubmitModal(true)}>Submit</Button>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="container w-full mt-20">
-            <div className="flex gap-1 px-12">
-              <span className="text-2xl font-semibold">
-                {currentQuestionIndex + 1}.{" "}
-              </span>
-              <div className="grow">{renderQuestion(currentQuestion)}</div>
-            </div>
-          </div>
-        </>
-      )}
 
-      <Modal
-        isOpen={submitModal}
-        onClose={() => setSubmitModal(false)}
-        title=""
-      >
-        <p className="text-base font-medium">
-          Are you sure you want to submit ?
-        </p>
-        <div className="flex gap-2 mt-4">
-          <Button
-            className="w-full"
-            onClick={() => setSubmitModal(false)}
-            variant="danger"
-          >
-            Close Modal
-          </Button>
-          <Button className="w-full" onClick={submitQuiz} variant="black">
-            Submit
-          </Button>
-        </div>
-      </Modal>
-    </div>
+            <div className="container w-full mt-20">
+              <div className="flex gap-1 px-12">
+                <span className="text-2xl font-semibold">
+                  {currentQuestionIndex + 1}.{" "}
+                </span>
+                <div className="grow">{renderQuestion(currentQuestion)}</div>
+              </div>
+            </div>
+          </>
+        )}
+
+        <Modal
+          isOpen={submitModal}
+          onClose={() => setSubmitModal(false)}
+          title=""
+        >
+          <p className="text-base font-medium">
+            Are you sure you want to submit ?
+          </p>
+          <div className="flex gap-2 mt-4">
+            <Button
+              className="w-full"
+              onClick={() => setSubmitModal(false)}
+              variant="danger"
+            >
+              Close Modal
+            </Button>
+            <Button className="w-full" onClick={submitQuiz} variant="black">
+              Submit
+            </Button>
+          </div>
+        </Modal>
+      </div>
+    </>
   );
 };
 

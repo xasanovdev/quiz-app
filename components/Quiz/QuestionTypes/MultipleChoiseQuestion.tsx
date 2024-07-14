@@ -25,8 +25,8 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
                   id={option}
                   name={`multiple-choice-${question.id}`}
                   value={option}
-                  checked={selectedOptions.includes(option)}
-                  onClick={() => onOptionClick(option)}
+                  checked={selectedOptions?.includes(option)}
+                  onChange={() => onOptionClick(option)}
                 />
 
                 {option}

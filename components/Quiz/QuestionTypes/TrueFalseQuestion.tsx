@@ -1,42 +1,41 @@
-// app/components/QuestionTypes/TrueFalseQuestion.tsx
-
 import React from "react";
 import type { Question } from "@/types/question";
 
-interface TrueFalseQuestionProps {
+interface SingleChoiceQuestionProps {
   question: Question;
-  onOptionClick: (option: boolean) => void;
+  onOptionClick: (option: string) => void;
+  selectedOption: string | null;
 }
 
-const TrueFalseQuestion: React.FC<TrueFalseQuestionProps> = ({
+const SingleChoiceQuestion: React.FC<SingleChoiceQuestionProps> = ({
   question,
   onOptionClick,
+  selectedOption,
 }) => {
   return (
     <div>
-      <p>{question.question}</p>
-      <div>
-        <input
-          type="radio"
-          id={`true-${question.id}`}
-          name={`true-false-${question.id}`}
-          value="true"
-          onClick={() => onOptionClick(true)}
-        />
-        <label htmlFor={`true-${question.id}`}>True</label>
-      </div>
-      <div>
-        <input
-          type="radio"
-          id={`false-${question.id}`}
-          name={`true-false-${question.id}`}
-          value="false"
-          onClick={() => onOptionClick(false)}
-        />
-        <label htmlFor={`false-${question.id}`}>False</label>
-      </div>
+      <p className="text-2xl font-semibold text-black">
+        {question.question} {selectedOption}
+      </p>
+      <ul className="mt-4 flex flex-col gap-4">
+        {question.options?.map((option, index) => (
+          <li key={index}>
+            <label className="px-4 py-3 flex items-center gap-2 cursor-pointer border border-black rounded w-full">
+              <input
+                type="radio"
+                id={option}
+                name={`single-choice-${question.id}`}
+                value={option}
+                checked={selectedOption == option}
+                onChange={() => onOptionClick(option)}
+              />
+              {option}
+            </label>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
 
-export default TrueFalseQuestion;
+export default SingleChoiceQuestion;
