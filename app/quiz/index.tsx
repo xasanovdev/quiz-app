@@ -30,10 +30,6 @@ const Quiz = () => {
   const [textInputAnswer, setTextInputAnswer] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // useEffect(() => {
-  //   setQuizQuestions();
-  // }, []);
-
   const currentQuestion = quizQuestions[currentQuestionIndex];
 
   const handleOptionClick = (option: string | boolean | string[]) => {
@@ -181,21 +177,32 @@ const Quiz = () => {
 
   return (
     <div>
-      {isSubmitted ? <Overview /> : renderQuestion(currentQuestion)}
-      <div>
-        <button onClick={handlePrevious} disabled={currentQuestionIndex === 0}>
-          Previous
-        </button>
-        <button
-          onClick={handleNext}
-          disabled={currentQuestionIndex === quizQuestions.length - 1}
-        >
-          Next
-        </button>
-        <button onClick={submitQuiz}>Submit</button>
-      </div>
-      <div>Score: {score}</div>
-      <pre>Overview: {JSON.stringify(overviewAnswers)}</pre>
+      {isSubmitted ? (
+        <>
+          <Overview />
+          <div>Score: {score}</div>
+          <pre>Overview: {JSON.stringify(overviewAnswers)}</pre>
+        </>
+      ) : (
+        <>
+          {renderQuestion(currentQuestion)}
+          <div>
+            <button
+              onClick={handlePrevious}
+              disabled={currentQuestionIndex === 0}
+            >
+              Previous
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={currentQuestionIndex === quizQuestions.length - 1}
+            >
+              Next
+            </button>
+            <button onClick={submitQuiz}>Submit</button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
