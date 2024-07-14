@@ -15,10 +15,15 @@ interface Answer {
   answer: string | string[] | boolean;
 }
 
+interface OverviewAnswers extends Answer {
+  isCorrect: boolean;
+}
+
 const Quiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [overviewAnswers, setOverviewAnswers] = useState<OverviewAnswers[]>([]);
   const [score, setScore] = useState(0);
   const [textInputAnswer, setTextInputAnswer] = useState("");
 
@@ -79,22 +84,48 @@ const Quiz = () => {
 
   const submitQuiz = () => {
     const correctAnswers = quizQuestions.filter((question) => {
-      const userAnswer = answers.find(
-        (answer) => answer.question === question.question
-      )?.answer;
-
-      if (question.type === "single-choice" || question.type === "true-false") {
-        return userAnswer === question.answer;
-      } else if (question.type === "multiple-choice") {
-        return JSON.stringify(userAnswer) === JSON.stringify(question.answer);
-      } else if (question.type === "text-input") {
-        return userAnswer === question.answer;
-      } else {
-        return false;
+      const answer = answers.find((ans) => ans.question === question.question);
+      if (!answer) return false;
+      if (question.type === "multiple-choice") {
+        return (
+          JSON.stringify(answer.answer) === JSON.stringify(question.answer)
+        );
       }
+      return answer.answer === question.answer;
     });
 
     setScore(correctAnswers.length);
+
+    setOverviewAnswers(
+      answers.map((answer) => {
+        const question = quizQuestions.find(
+          (question) => question.question === answer.question
+        );
+
+        if (!question) {
+          return {
+            question: answer.question,
+            answer: answer.answer,
+            isCorrect: false,
+          };
+        }
+
+        if (question.type === "multiple-choice") {
+          return {
+            question: answer.question,
+            answer: answer.answer,
+            isCorrect:
+              JSON.stringify(answer.answer) === JSON.stringify(question.answer),
+          };
+        }
+
+        return {
+          question: answer.question,
+          answer: answer.answer,
+          isCorrect: answer.answer === question.answer,
+        };
+      })
+    );
   };
 
   const renderQuestion = (question: Question) => {
@@ -159,7 +190,7 @@ const Quiz = () => {
         <button onClick={submitQuiz}>Submit</button>
       </div>
       <div>Score: {score}</div>
-      <pre>Answer: {answers.map((val) => val.answer)}</pre>
+      <pre>Overview: {JSON.stringify(overviewAnswers)}</pre>
     </div>
   );
 };
