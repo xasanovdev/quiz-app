@@ -3,3 +3,23 @@
 @tailwind utilities;
 
 @import url("/css/reset.css");
+
+.flex-center {
+  @apply flex items-center justify-center;
+}
+
+@keyframes scale-up {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.scale-up {
+  animation: scale-up 0.3s ease-in-out;
+}

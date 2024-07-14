@@ -10,6 +10,7 @@ import { Answer, OverviewAnswers, Question } from "@/types/question";
 import SingleChoiceQuestion from "../../components/Quiz/QuestionTypes/SingleChoiseQuestion";
 import MultipleChoiceQuestion from "../../components/Quiz/QuestionTypes/MultipleChoiseQuestion";
 import Overview from "../../components/Quiz/Overview";
+import Button from "@/components/Button";
 
 const Quiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -173,19 +174,30 @@ const Quiz = () => {
         <>
           {renderQuestion(currentQuestion)}
           <div>
-            <button
+            <Button
               onClick={handlePrevious}
               disabled={currentQuestionIndex === 0}
             >
               Previous
-            </button>
-            <button
+            </Button>
+            {quizQuestions.map((question, index) => (
+              <Button
+                key={question.id}
+                onClick={() => setCurrentQuestionIndex(index)}
+                variant="black"
+                size="small"
+                disabled={answers[index] === undefined}
+              >
+                {index + 1}
+              </Button>
+            ))}
+            <Button
               onClick={handleNext}
               disabled={currentQuestionIndex === quizQuestions.length - 1}
             >
               Next
-            </button>
-            <button onClick={submitQuiz}>Submit</button>
+            </Button>
+            <Button onClick={submitQuiz}>Submit</Button>
           </div>
         </>
       )}
