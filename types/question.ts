@@ -10,3 +10,13 @@ export interface Question {
   options?: string[];
   answer: string | boolean | string[];
 }
+
+export interface Answer {
+  question: string;
+  answer: string | string[] | boolean;
+}
+
+export interface OverviewAnswers extends Answer {
+  isCorrect: boolean;
+  isAnswered?: boolean;
+}

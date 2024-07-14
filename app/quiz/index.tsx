@@ -6,20 +6,10 @@ import TrueFalseQuestion from "../components/Quiz/QuestionTypes/TrueFalseQuestio
 import DragAndDropQuestion from "../components/Quiz/QuestionTypes/DragAndDropQuestion";
 import TextInputQuestion from "../components/Quiz/QuestionTypes/TextInputQuestion";
 
-import { Question } from "@/types/question";
+import { Answer, OverviewAnswers, Question } from "@/types/question";
 import SingleChoiceQuestion from "../components/Quiz/QuestionTypes/SingleChoiseQuestion";
 import MultipleChoiceQuestion from "../components/Quiz/QuestionTypes/MultipleChoiseQuestion";
 import Overview from "../components/Quiz/Overview";
-
-interface Answer {
-  question: string;
-  answer: string | string[] | boolean;
-}
-
-interface OverviewAnswers extends Answer {
-  isCorrect: boolean;
-  isAnswered?: boolean;
-}
 
 const Quiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -178,11 +168,7 @@ const Quiz = () => {
   return (
     <div>
       {isSubmitted ? (
-        <>
-          <Overview />
-          <div>Score: {score}</div>
-          <pre>Overview: {JSON.stringify(overviewAnswers)}</pre>
-        </>
+        <Overview score={score} overviewAnswers={overviewAnswers} />
       ) : (
         <>
           {renderQuestion(currentQuestion)}
